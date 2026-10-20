@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610201808"></script>
+<script src="fbshim.js?v=202610201825"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -1493,7 +1493,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=50?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil in City oder Marienhospital in Gelsenkirchen) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610201808 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610201825 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -2358,7 +2358,7 @@ const WX={sun:{e:'☀️',n:'Sonnig'},rain:{e:'🌧️',n:'Regen'},heat:{e:'🔥
 function dayCheck(){if(S.lastDay==null){S.lastDay=dayNo();return}if(dayNo()===S.lastDay)return;const n=dayNo()-S.lastDay;S.lastDay=dayNo();
  if(S.wanted)S.wanted=Math.max(0,S.wanted-n);
  let inc=0;for(const k of HOOD_KEYS)if(k!==S.hood&&(S.turf||{})[k]>=100)inc+=50*n;if(inc){S.coins+=inc;setTimeout(()=>toast(`🏴 Schutzgeld aus deinen Revieren: +${inc} 💰`),1500)}
- const w=WX[weather()];turfWar(n);if(kirmesOn()&&dayNo()%2===0)setTimeout(()=>toast('🎡 Die Cranger Kirmes ist da! Nur an diesem Wochenende. Fahr vom Bahnhof hin.'),4800);toast(`Neuer Spieltag! ${w.e} ${w.n}: ${WXD[weather()]}`);snd('pling');save()}
+ const w=WX[weather()];turfWar(n);if(kirmesOn()&&dayNo()%2===0)setTimeout(()=>toast('🎡 Die Cranger Kirmes ist da! 2 Spieltage lang. Fahr vom Bahnhof hin.'),4800);else if(kirmesSoon())setTimeout(()=>toast('🎡 Morgen kommt die Cranger Kirmes! Sei dann am Bahnhof.'),4800);toast(`Neuer Spieltag! ${w.e} ${w.n}: ${WXD[weather()]}`);snd('pling');save()}
 function wantedStars(){return S.wanted?'⭐'.repeat(S.wanted):''}
 function addWanted(n){S.wanted=Math.min(5,(S.wanted||0)+n);if(n>0)toast(`🚨 Fahndungslevel: ${wantedStars()}`)}
 function removeCard(id){const o=S.cards[id];if(!o)return false;if(o.count>1){o.count--;return true}if(S.team.includes(id)&&S.team.length<=1)return false;delete S.cards[id];S.team=S.team.filter(t=>t!==id);return true}
@@ -3500,9 +3500,12 @@ const KIR_IDS=[];
 for(const [id,n,rar,eff,val,sub,sp] of KIR_DEF){const c={id,n,rar,reg:'kirmes',eff,val,sub,regL:'Cranger Kirmes',img:npcPortrait(sp,hash(id)),pix:1,secret:1,kirmes:1};CARDS[id]=c;ALL_IDS.push(id);KIR_IDS.push(id)}
 ITEM.teddy={id:'teddy',n:'Riesen-Teddy',e:'🧸',p:60,xp:30,tag:'',x:1};ITEM.zucker={id:'zucker',n:'Zuckerwatte',e:'🍭',p:12,xp:12,tag:'',x:1};
 IX.zucker={h:.22,crit:.05,d:'Heilt 22 % HP, +5 % Krit (Zuckerschock)'};
-function kirmesOn(){if(!S)return false;const d=dayNo();if(d<3)return false;return srng(hash('kirmes'+Math.floor(d/2)))()<.1}
+function kirBlockOn(b,last){const gap=b-last;if(gap>=15)return true;const p=gap<5?.1:Math.min(1,.1+(gap-4)*.09);return srng(hash('kirmes'+b))()<p}
+function kirmesOn(){if(!S)return false;const d=dayNo();if(d<3)return false;const b=Math.floor(d/2);if(S.kirOnB===b)return true;if(S.kirB==null)S.kirB=b;
+ if(kirBlockOn(b,S.kirB)){S.kirOnB=b;S.kirB=b;return true}return false}
+function kirmesSoon(){if(!S)return false;const d=dayNo();if(d<2||d%2!==1||kirmesOn())return false;const b=Math.floor(d/2);return kirBlockOn(b+1,S.kirB==null?b:S.kirB)}
 function kirmesLeft(){return 2-dayNo()%2}
-function kirBtn(){if(!kirmesOn()||M.h==='kir')return'';return `<button class="item kirbtn" onclick="travel('kir')"><div style="font-size:30px">🎡</div><div class="in">Cranger Kirmes</div><div class="ip" style="color:#ff9ae0">Nur ${kirmesLeft()===1?'noch heute':'dieses Wochenende'}!</div><div class="ip" style="color:#ffe27a;font-weight:800">EVENT</div></button>`}
+function kirBtn(){if(!kirmesOn()||M.h==='kir')return'';return `<button class="item kirbtn" onclick="travel('kir')"><div style="font-size:30px">🎡</div><div class="in">Cranger Kirmes</div><div class="ip" style="color:#ff9ae0">Nur ${kirmesLeft()===1?'noch heute':'die nächsten 2 Tage'}!</div><div class="ip" style="color:#ffe27a;font-weight:800">EVENT</div></button>`}
 function kirObj(x,tt,X,y,px,py,s,t){
  if(tt==='y'){if(s<.1){x.fillStyle=['#ff7ad9','#ffe62f','#5ce1ff','#7dff9a'][Math.floor(s*40)%4];x.fillRect(px+ts*(.2+s*5),py+ts*(.3+s*3),3,3)}return false}
  if(tt==='i'){const c=['#e5484d','#2f6fd1','#ffe62f','#3fae5a','#9b4dff'][(X*7+y*3)%5];x.fillStyle='#000a';x.fillRect(px,py+ts*.75,ts+.5,ts*.2);x.fillStyle='#3a2a1a';x.fillRect(px+ts*.08,py+ts*.15,ts*.84,ts*.75);x.fillStyle='#f2e6c8';x.fillRect(px+ts*.14,py+ts*.35,ts*.72,ts*.4);
