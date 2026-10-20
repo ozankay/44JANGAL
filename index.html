@@ -1,5 +1,5 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#121316">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610201241"></script>
+<script src="fbshim.js?v=202610201538"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -582,6 +582,12 @@ textarea.codebox{background:#15171b;border:2px solid var(--line);color:var(--tex
 @keyframes losopen{from{transform:rotateY(90deg)}}
 
 
+
+/* Fix: kein Zoom bei Doppeltipp, keine Lupe/Callout beim langen Drücken */
+*{touch-action:manipulation}
+html,body{-webkit-touch-callout:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img{-webkit-user-drag:none;user-drag:none}
 /* Fix: Schließen leichter erreichbar, Kampf-Tasche scrollbar */
 #modal .box{max-height:calc(100% - 4px)}
 #modal .box>.x{width:44px;height:44px;top:4px;right:4px;font-size:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:4}
@@ -1360,6 +1366,12 @@ function cardHTML(id,w=170,opt={}){const c=CARDS[id],o=S&&S.cards[id];const lock
  <div class="ph"><img class="${c.pix?'pix':''}" src="${c.img}" alt="">${(o&&o.holo&&!lock&&!opt.nogold)?'<div class="holofx"></div>':''}${(o&&o.eq&&ITEM[o.eq.k]&&!lock&&!opt.nogold&&w>=90)?`<div class="eqb">${iconImg(ITEM[o.eq.k].e)}</div>`:''}${(o&&o.dead&&!lock&&!opt.nogold)?'<div class="deadmk">💀</div>':''}${lvl&&!lock?`<div class="lv">LV ${lvl}</div>`:''}${o&&o.count>1&&!opt.nocount?`<div class="cnt">×${o.count}</div>`:''}</div>
  <div class="ft"><div class="ef">${lock?'':esc(effText(c))}</div><div class="rg">${RAR[c.rar].n}${c.regL?' · '+esc(c.regL):''}</div></div></div></div>`}
 
+
+// Fix: Pinch- und Doppeltipp-Zoom unterbinden (iOS ignoriert user-scalable)
+(function(){const stop=e=>{e.preventDefault()};['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,stop,{passive:false}));
+ document.addEventListener('dblclick',e=>{if(!(e.target.closest&&e.target.closest('input,textarea')))e.preventDefault()},{passive:false});
+ document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
+ document.addEventListener('selectstart',e=>{if(!(e.target.closest&&e.target.closest('input,textarea')))e.preventDefault()});})();
 /* ========== modal ========== */
 function modal(html,onClose,lock){$('#mbox').innerHTML=(lock?'':`<button class="x" onclick="closeModal()" aria-label="Schließen">×</button>`)+html+(lock?'':`<div class="mclose"><button class="btn" onclick="closeModal()">✕ Schließen</button></div>`);$('#modal').classList.add('on');modal.lock=!!lock;busy=true;heldDir=null;P.path=[];modal._c=onClose}
 function closeModal(){modal.lock=false;$('#modal').classList.remove('on');busy=false;hud();save();if(modal._c){const c=modal._c;modal._c=null;c()}}
@@ -1481,7 +1493,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=50?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil, City) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610201241 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610201538 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -1641,7 +1653,7 @@ function openPack(k,opt){return new Promise(async res=>{const p=PACKS[k];const r
  await tap(ov);if(rws.upg)await packUpgradeFX(ov,rws.upg);snd('tear');$('#pkb').classList.add('tear');await sleep(450);
  for(const r of rws){await showReward(ov,r)}if(rws.niete)snd('bad');
  ov.innerHTML=`<div class="stage" style="overflow:auto;justify-content:flex-start;padding-top:40px"><div class="px" style="font-size:12px">${rws.niete?'NIETE 😩 NUR NPCs':'INHALT'}</div><div class="row" style="justify-content:center;max-width:720px">${rws.map(r=>r.t==='card'?cardHTML(r.id,110,{nocount:1}):`<div class="item" style="width:110px">${r.t==='item'?iconImg(ITEM[r.id].e):iconImg(r.t==='coins'?'💰':r.t==='packs'?'🎁':'⚡')}<div class="in">${r.t==='coins'?r.v+' Münzen':r.t==='energy'?'+'+r.v+' Energie':r.t==='packs'?r.v.length+' Gratis-Packs':ITEM[r.id].n}</div></div>`).join('')}</div><button class="btn pri" id="pkok">Weiter</button></div>`;
- $('#pkok').onclick=()=>{ovm.classList.remove('on');ovm.innerHTML='';res()}})}
+ const ok=$('#pkok');if(!ok)return res();ok.onclick=()=>{ovm.classList.remove('on');ovm.innerHTML='';res()}})}
 function tap(el){return new Promise(r=>{const h=e=>{e.stopPropagation();el.removeEventListener('pointerdown',h);r()};setTimeout(()=>el.addEventListener('pointerdown',h),180)})}
 async function showReward(ov,r){if(r.t!=='card'){const lab=r.t==='coins'?`${r.v}<br>MÜNZEN`:r.t==='energy'?`+${r.v}<br>ENERGIE`:r.t==='packs'?`${r.v.length} GRATIS-PACKS<br><span style="color:#ffe27a;font-size:.75em">LIEGEN IN DER TASCHE</span>`:esc(ITEM[r.id].n).toUpperCase();const ic=r.t==='coins'?emojiIcon('💰',20):r.t==='energy'?emojiIcon('⚡',20):r.t==='packs'?emojiIcon('🎁',20):emojiIcon(ITEM[r.id].e,20);
   snd(r.t==='coins'?'coin':'pling');ov.innerHTML=`<div class="stage"><div class="rew"><img class="pix" src="${ic}"><div class="rv">${lab}</div></div><div class="hint">Tippen</div></div>`;await tap(ov);return}
@@ -1712,8 +1724,8 @@ function act(){return B.team[B.ai]}
 function cw(){return Math.round(clamp(Math.min(window.innerWidth*.3,(window.innerHeight-260)*.36),90,170))}
 function drawB(){const p=act(),e=B.e;$('#cP').classList.remove('ko');$('#cE').innerHTML=cardHTML(e.id,cw(),{lvl:e.lvl,nocount:1,nogold:1,cls:e.boss?'bosscard':''});$('#cP').innerHTML=cardHTML(p.id,cw(),{lvl:p.lvl,nocount:1});hpBox('hE',e);hpBox('hP',p)}
 function hpBox(id,f){const pc=Math.max(0,f.hp/f.max*100);const col=pc>50?'#3fae5a':pc>20?'#f0b429':'#e5484d';const s=[];if(f.blind)s.push('geblendet');if(f.poisonT)s.push(f.dot==='bleed'?'blutet':'vergiftet');if(f.defd)s.push(`Abw −${f.defd}`);if(f.atkd)s.push(`Ang −${f.atkd}`);if(f.evade)s.push('sprintet');
- $('#'+id).innerHTML=`<div class="n"><span>${f.boss?'👑 ':''}${esc(f.c.n)}${f.side==='e'&&B&&B.nE>1?` <small style="color:#7a2a2a">${Math.min(B.nE,B.beaten.length+1)}/${B.nE}</small>`:''}</span><span>LV${f.lvl}</span></div><div class="hpbar"><i style="width:${pc}%;background:${col}"></i></div>${f.side==='p'?`<div class="hn">${Math.max(0,f.hp)}/${f.max}</div>`:''}<div class="stt">${s.join(' · ')}</div>`}
-function log(t){$('#blog').textContent=t}
+ if(!$('#'+id))return;$('#'+id).innerHTML=`<div class="n"><span>${f.boss?'👑 ':''}${esc(f.c.n)}${f.side==='e'&&B&&B.nE>1?` <small style="color:#7a2a2a">${Math.min(B.nE,B.beaten.length+1)}/${B.nE}</small>`:''}</span><span>LV${f.lvl}</span></div><div class="hpbar"><i style="width:${pc}%;background:${col}"></i></div>${f.side==='p'?`<div class="hn">${Math.max(0,f.hp)}/${f.max}</div>`:''}<div class="stt">${s.join(' · ')}</div>`}
+function log(t){const e=$('#blog');if(e)e.textContent=t}
 function bCtl(){const p=act();const items=bagList();
  $('#bctl').innerHTML=movesOf(p.c).map(m=>{const cd=MOVES[m].ult&&p.ultCd>0;return `<button class="btn mv ${MOVES[m].ult?'ult':''}" onclick="turn('${m}')" ${B.busy||cd?'disabled':''}>${MOVES[m].n}<small>${cd?`⏳ wieder bereit in ${p.ultCd} ${p.ultCd===1?'Runde':'Runden'}`:MOVES[m].d}</small></button>`}).join('')+
  `<div class="ex"><button class="btn" ${B.busy||!items.length?'disabled':''} onclick="bBag()">🎒 Tasche</button><button class="btn" ${B.busy||B.team.filter(f=>f.hp>0).length<2?'disabled':''} onclick="bSwitch()">🔄 Wechseln</button><button class="btn" ${B.busy?'disabled':''} onclick="turn('flee')">🏃 Abhauen ${Math.round(fleeChance()*100)}%</button></div>`}
@@ -2474,8 +2486,8 @@ function stPfand(name){const d=dayNo();if(!S.pfand||S.pfand.day!==d)S.pfand={day
 async function pfandGame(){S.pfand.n++;closeModal();busy=true;const ov=$('#ov');ov.classList.add('on');
  ov.innerHTML=`<div class="stage" style="background:radial-gradient(circle,#1f3d27,#08130b 75%)"><div class="px" style="font-size:12px">PFAND-RUSH</div><div class="pgrid">${Array.from({length:9},(_,i)=>`<button class="pslot" data-i="${i}"></button>`).join('')}</div><div class="px" id="pcnt" style="font-size:14px">0 Flaschen · 10s</div></div>`;
  let n=0,end=performance.now()+10000;const slots=[...ov.querySelectorAll('.pslot')];const B2=['🍾','🥫','🍺','🧃'];
- slots.forEach(b=>b.onclick=e=>{e.stopPropagation();if(b.dataset.on&&b.dataset.bad){b.dataset.on='';b.dataset.bad='';b.classList.remove('bad');b.innerHTML='<span class="pminus">−2</span>';n=Math.max(0,n-2);snd('bad');b.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'none'}],{duration:240});setTimeout(()=>{if(!b.dataset.on)b.innerHTML=''},450);$('#pcnt').textContent=`${n} Flaschen · ${Math.max(0,Math.ceil((end-performance.now())/1000))}s`;return}if(b.dataset.on){b.dataset.on='';b.innerHTML='';n++;snd('clink');$('#pcnt').textContent=`${n} Flaschen · ${Math.max(0,Math.ceil((end-performance.now())/1000))}s`}});
- while(performance.now()<end){const free=slots.filter(b=>!b.dataset.on);if(free.length){const b=pick(free);b.dataset.on=1;const bad=performance.now()>end-9000&&R()<.2;if(bad){b.dataset.bad=1;b.classList.add('bad');b.innerHTML=iconImg(pick(['💩','🐀','💉','🧨']))}else b.innerHTML=iconImg(pick(B2));const life=Math.max(450,900-n*15)+(bad?250:0);setTimeout(()=>{if(b.dataset.on){b.dataset.on='';b.dataset.bad='';b.classList.remove('bad');b.innerHTML=''}},life)}await sleep(Math.max(260,520-n*8));$('#pcnt').textContent=`${n} Flaschen · ${Math.max(0,Math.ceil((end-performance.now())/1000))}s`}
+ slots.forEach(b=>b.onclick=e=>{e.stopPropagation();if(b.dataset.on&&b.dataset.bad){b.dataset.on='';b.dataset.bad='';b.classList.remove('bad');b.innerHTML='<span class="pminus">−2</span>';n=Math.max(0,n-2);snd('bad');b.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'none'}],{duration:240});setTimeout(()=>{if(!b.dataset.on)b.innerHTML=''},450);($('#pcnt')||{}).textContent=`${n} Flaschen · ${Math.max(0,Math.ceil((end-performance.now())/1000))}s`;return}if(b.dataset.on){b.dataset.on='';b.innerHTML='';n++;snd('clink');($('#pcnt')||{}).textContent=`${n} Flaschen · ${Math.max(0,Math.ceil((end-performance.now())/1000))}s`}});
+ while(performance.now()<end){const free=slots.filter(b=>!b.dataset.on);if(free.length){const b=pick(free);b.dataset.on=1;const bad=performance.now()>end-9000&&R()<.2;if(bad){b.dataset.bad=1;b.classList.add('bad');b.innerHTML=iconImg(pick(['💩','🐀','💉','🧨']))}else b.innerHTML=iconImg(pick(B2));const life=Math.max(450,900-n*15)+(bad?250:0);setTimeout(()=>{if(b.dataset.on){b.dataset.on='';b.dataset.bad='';b.classList.remove('bad');b.innerHTML=''}},life)}await sleep(Math.max(260,520-n*8));($('#pcnt')||{}).textContent=`${n} Flaschen · ${Math.max(0,Math.ceil((end-performance.now())/1000))}s`}
  const g=n*3;S.coins+=g;snd(n>12?'cashreg':'coin');ov.querySelector('.stage').insertAdjacentHTML('beforeend',`<div class="pres"><b>${n} Flaschen = +${g} 💰</b><br>${n>15?'Pfandkönig von Bochum.':n>8?'Solide Runde.':'Der Penner von der Ecke war schneller.'}</div><div class="hint">Tippen</div>`);await sleep(500);await tap(ov);ov.classList.remove('on');ov.innerHTML='';busy=false;hud();save()}
 
 /* --- Waschanlage --- */
@@ -3159,7 +3171,7 @@ async function fishGo(name){if(S.energy<1)return;S.energy--;closeModal();busy=tr
     if(t>biteAt){state='bite';fb.classList.add('dive');ft.textContent='!!! JETZT !!!';ft.style.color='#ffe27a';snd('alert');res=t}}
    else if(state==='bite'&&t-res>620){state='x';fb.classList.remove('dive');ft.textContent='Zu spät. Weg isser.';snd('bad');done(false);return}
    requestAnimationFrame(loop)};requestAnimationFrame(loop)});
- if(!hooked){await sleep(900);ov.querySelectorAll('#fp').forEach(e=>e.remove());ov.querySelector('.stage').insertAdjacentHTML('beforeend','<div class="hint">Tippen</div>');await tap(ov);ov.classList.remove('on');ov.innerHTML='';busy=false;hud();save();return}
+ if(!hooked){await sleep(900);ov.querySelectorAll('#fp').forEach(e=>e.remove());(ov.querySelector('.stage')||ov).insertAdjacentHTML('beforeend','<div class="hint">Tippen</div>');await tap(ov);ov.classList.remove('on');ov.innerHTML='';busy=false;hud();save();return}
  // Drill
  fb.classList.remove('dive');fb.classList.add('fight');ft.textContent='Halten = einholen. Loslassen, bevor die Schnur reißt!';ft.style.color='#fff';
  fp.outerHTML=`<div class="fbars"><div class="fbar"><i id="fprog"></i><span>EINHOLEN</span></div><div class="fbar ften"><i id="ften"></i><span>SPANNUNG</span></div></div><button class="btn pri fpull" id="fh">🎣 GEDRÜCKT HALTEN</button>`;
@@ -3218,7 +3230,7 @@ async function juwGo(){if(S.energy<6||(S.juwDay!=null&&dayNo()-S.juwDay<3))retur
    if(!look&&!warn&&t>nextT-450){warn=true;jg.classList.add('warn');snd('cough')}
    if(t>nextT){look=!look;warn=false;jg.classList.remove('warn');jg.classList.toggle('look',look);nextT=t+(look?ri(900,1600):ri(1300,2400))}
    if(hold){prog+=dt*.013;if(look){strikes++;hold=false;jwh.classList.remove('on');$('#jws').textContent=strikes>=2?'ER HAT DICH GESEHEN!':'„Hm? War da was?“ Gerade nochmal gut gegangen.';snd('alert');shakeEl(ov.querySelector('.stage'));prog=Math.max(0,prog-15);if(strikes>=2){run=false;done(false);return}}}
-   $('#jme').style.left=Math.min(100,prog)+'%';if(prog>=100){run=false;done(true);return}requestAnimationFrame(loop)};requestAnimationFrame(loop)});
+   if(!$('#jme')){run=false;done(false);return}$('#jme').style.left=Math.min(100,prog)+'%';if(prog>=100){run=false;done(true);return}requestAnimationFrame(loop)};requestAnimationFrame(loop)});
  if(!sneak){await juwFail(ov,'Der Wachmann drückt den Alarmknopf. Lauf!');return}
  snd('pling');await sleep(500);
  // 2) Alarm knacken (Simon)
@@ -3354,7 +3366,7 @@ async function pwLaurien(pr){if(S.coins<pr)return;S.coins-=pr;closeModal();busy=
 function pwSit(){closeModal();S.clock+=120;dayCheck();pwLeave('⏳ Du hast deine Zeit abgesessen. Draußen ist es schon anders.')}
 function pwVault(){if(!PW)return;const ks=Object.keys(PW.taken||{});if(!PW.riot&&M.g[3][5]==='Q')return;if(!ks.length){toast('🗃️ Hier liegt nichts mehr von dir.');return}for(const k of ks)addItem(k,PW.taken[k]);let extra='';if(R()<.35){const it=pick(RARE_ITEMS);addItem(it);extra=` + ${ITEM[it].e} ${ITEM[it].n} von jemand anderem`}toast(`🗃️ Zurückgeholt: ${ks.map(k=>ITEM[k].e).join(' ')}${extra}`);PW.taken={};snd('cashreg');save()}
 async function pwEscape(){if(!PW)return;busy=true;const ov=$('#ov');ov.classList.add('on');ov.innerHTML=`<div class="stage" style="background:radial-gradient(circle,#2a4a2a,#05070d 75%)"><div class="rays"></div><div class="wo" style="font-size:clamp(18px,6vw,34px)">AUSGEBROCHEN!</div><div class="pres">Die frische Luft riecht nach Freiheit. Und nach Döner.<br><b>+60 XP</b> · ⭐ Fahndung +2</div><div class="hint">Tippen</div></div>`;snd('fanfare');confetti(ov.querySelector('.stage'),60);addPXP(60);S.stats.breakout=(S.stats.breakout||0)+1;await sleep(400);await tap(ov);ov.classList.remove('on');ov.innerHTML='';PW=null;pwLeave('🏃 Frei! Aber jetzt suchen sie dich.');addWanted(2)}
-function pwLeave(msg){PW=null;S.jail=null;loadMap(S.loc);P.x=P.rx=M.st.B.x;P.y=P.ry=M.st.B.y;S.pos={x:P.x,y:P.y};enemies=[];QR=null;SE=null;PETp=null;P.path=[];resize();showLoc();busy=false;hud();save();if(msg)toast(msg)}
+function pwLeave(msg){PW=null;S.jail=null;if(!MAPS[S.loc]||S.loc==='pw')S.loc=S.hood||'city';loadMap(S.loc);const s0=M.st.B||Object.values(M.st)[0];P.x=P.rx=s0.x;P.y=P.ry=s0.y;S.pos={x:P.x,y:P.y};enemies=[];QR=null;SE=null;PETp=null;P.path=[];resize();showLoc();busy=false;hud();save();if(msg)toast(msg)}
 function pwObj(x,tt,X,y,px,py,t){
  if(tt==='_'){x.strokeStyle='#00000014';x.strokeRect(px+.5,py+.5,ts-1,ts-1);return false}
  if(tt==='W'){box(x,px,py,1.15,'#4a5162','#2f3542',0,null);x.fillStyle='#1f6b4a';x.fillRect(px,py+ts*.05,ts+.5,ts*.06);return true}
@@ -3540,7 +3552,7 @@ async function scooterGo(){if(S.coins<25)return;S.coins-=25;closeModal();busy=tr
  const cv2=$('#ac'),c=cv2.getContext('2d');const W2=320,H2=320,RAD=17;const cols=['#ffe62f','#e5484d','#2f6fd1','#3fae5a','#9b4dff'];
  const cars=cols.map((col,i)=>({x:60+i*50,y:i===0?260:60+R()*120,vx:i?(R()-.5)*3:0,vy:i?(R()-.5)*3:0,col,me:i===0,cd:0}));let tx=null,ty=null,bumps=0;
  const pos=e=>{const r=cv2.getBoundingClientRect();tx=(e.clientX-r.left)/r.width*W2;ty=(e.clientY-r.top)/r.height*H2};cv2.addEventListener('pointerdown',e=>{e.stopPropagation();pos(e)});cv2.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')pos(e)});cv2.addEventListener('pointerup',()=>{tx=null});
- await new Promise(res=>{const t0=performance.now();let last=t0;const loop=t=>{const dt=Math.min(32,t-last)/16;last=t;const el=(t-t0)/1000;$('#at').textContent=Math.max(0,Math.ceil(20-el))+' s';
+ await new Promise(res=>{const t0=performance.now();let last=t0;const loop=t=>{const dt=Math.min(32,t-last)/16;last=t;const el=(t-t0)/1000;if(!$('#at'))return res();$('#at').textContent=Math.max(0,Math.ceil(20-el))+' s';
    const me=cars[0];if(tx!=null){const dx=tx-me.x,dy=ty-me.y,d=Math.hypot(dx,dy)||1;me.vx+=dx/d*.35*dt;me.vy+=dy/d*.35*dt}me.vx*=.96;me.vy*=.96;const sp=Math.hypot(me.vx,me.vy);if(sp>5.5){me.vx*=5.5/sp;me.vy*=5.5/sp}
    for(const k of cars){if(!k.me){if(R()<.02){k.vx+=(R()-.5)*1.5;k.vy+=(R()-.5)*1.5}const s=Math.hypot(k.vx,k.vy);if(s>3.2){k.vx*=3.2/s;k.vy*=3.2/s}if(s<1){k.vx*=1.3;k.vy*=1.3}}k.x+=k.vx*dt;k.y+=k.vy*dt;if(k.x<RAD){k.x=RAD;k.vx=Math.abs(k.vx)}if(k.x>W2-RAD){k.x=W2-RAD;k.vx=-Math.abs(k.vx)}if(k.y<RAD){k.y=RAD;k.vy=Math.abs(k.vy)}if(k.y>H2-RAD){k.y=H2-RAD;k.vy=-Math.abs(k.vy)}if(k.cd>0)k.cd-=dt}
    for(let i=0;i<cars.length;i++)for(let j=i+1;j<cars.length;j++){const a=cars[i],b=cars[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<RAD*2&&d>0){const nx=dx/d,ny=dy/d,ov2=RAD*2-d;a.x-=nx*ov2/2;a.y-=ny*ov2/2;b.x+=nx*ov2/2;b.y+=ny*ov2/2;const rv=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;if(rv>0){a.vx-=rv*nx;a.vy-=rv*ny;b.vx+=rv*nx;b.vy+=rv*ny;if(a.me&&rv>1.6&&b.cd<=0){bumps++;b.cd=40;$('#ab').textContent='💥 '+bumps;snd('hit');const r2=cv2.getBoundingClientRect();const p=document.createElement('div');p.className='ascb';p.textContent=pick(['BUMM!','KRACH!','WUMMS!']);p.style.left=(cv2.offsetLeft+b.x/W2*r2.width)+'px';p.style.top=(cv2.offsetTop+b.y/H2*r2.height)+'px';cv2.parentNode.appendChild(p);setTimeout(()=>p.remove(),600)}}}}
