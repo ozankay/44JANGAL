@@ -39,4 +39,15 @@
  window.fbLogout=function(){if(!auth)return;var go=function(){try{S=null}catch(e){}try{localStorage.removeItem('44jangal_save_v1');localStorage.removeItem('44j_noacc')}catch(e){}auth.signOut().then(function(){location.reload()})};
   try{if(typeof cloudFlush==='function'&&typeof CLOUD!=='undefined'&&CLOUD.ready){CLOUD.dirty=true;cloudFlush().then(go,go);return}}catch(e){}go()};
  window.fbLogin=function(){try{localStorage.removeItem('44j_noacc')}catch(e){}location.reload()};
+
+ // ---------- Ansicht: Platz für Statusleiste (mit Notlösung für iOS-Fehler) ----------
+ window.VPINFO='';
+ function fixVP(){try{if(!document.body)return;var p=document.createElement('div');p.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;height:env(safe-area-inset-top,0px)';document.body.appendChild(p);var envTop=p.offsetHeight;p.remove();
+  var sa=!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches));var port=innerHeight>innerWidth;
+  var gap=sa&&port?Math.max(0,Math.round(screen.height-innerHeight)):0;var top=envTop,shift=0;
+  if(envTop<10&&gap>=20&&gap<90){top=gap;shift=gap}
+  var st=document.documentElement.style;st.setProperty('--sat',top+'px');st.setProperty('--sshift',shift+'px');
+  window.VPINFO='VP '+envTop+'/'+gap+'/'+innerHeight+'x'+screen.height+(sa?' S':'')}catch(e){}}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fixVP);else fixVP();
+ addEventListener('resize',function(){setTimeout(fixVP,60)});addEventListener('orientationchange',function(){setTimeout(fixVP,300)});addEventListener('load',fixVP);
 })();
