@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610211040"></script>
+<script src="fbshim.js?v=202610211123"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -1639,7 +1639,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=PMAX?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil in City oder Marienhospital in Gelsenkirchen) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="toggleMusic();openMenu()">${AU.musOff?'🎵 Musik ist aus':'🎵 Musik ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610211040 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610211123 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -4428,6 +4428,21 @@ GAMES.bank=async()=>{busy=true;const ov=$('#ov');ov.classList.add('on');
  S.stats.bankRaub=(S.stats.bankRaub||0)+1;ov.classList.add('on');ov.innerHTML=`<div class="stage" style="background:radial-gradient(circle,#0a3a1a,#000 72%)"><div class="rays"></div><div class="moneyrain"></div><div class="wo" style="font-size:clamp(20px,6vw,36px);position:relative">SPARKASSE AUSGERAUBT</div><div class="pres">Hakan löscht die Kameras, die Kloster-Jungs zählen in Kombi, Kippe raucht drei auf einmal.<br><b style="color:#ffe27a">Bochum gehört dir.</b></div><div class="hint">Tippen</div></div>`;snd('fanfare');snd('cashreg');setTimeout(()=>snd('airhorn'),400);confetti(ov.querySelector('.stage'),140);
  const mr=ov.querySelector('.moneyrain');for(let i=0;i<26;i++){const s=document.createElement('i');s.textContent=pick(['💶','💵','💰','💸']);s.style.left=(R()*100)+'%';s.style.animationDelay=(R()*2)+'s';s.style.animationDuration=(2+R()*2)+'s';mr.appendChild(s)}
  await sleep(600);await tap(ov);ov.classList.remove('on');ov.innerHTML='';return true};
+
+
+/* ========== Big N statt Rami (Mission „Ein Name für Amca“) ========== */
+MNPC.bign={n:'Big N',look:{skin:'#c68c5f',hair:'#111',hs:4,cap:'#1a1a1a',shirt:'#1a1a1a',pants:'#2c2c2c'},sp:{hair:'#111',hs:'hood',hat:'#1a1a1a',beard:1,gl:'sun',bg:'#2a3a2a',shirt:'#1a1a1a',skin:'#c68c5f'}};MNPC.bign.img=npcPortrait(MNPC.bign.sp,hash('bign'));
+Object.assign(SPECIAL,{bign:{id:'bign',n:'Big N',rar:3,eff:'Schläger',val:2,regL:'Hinterm Rewe',sub:'dealt hinter dem Rewe',img:MNPC.bign.img,pix:1},
+ bnjung:{id:'bnjung',n:'Big Ns Jung',rar:2,eff:'Diebstahl',val:1,regL:'Hinterm Rewe',sub:'steht Schmiere',img:npcPortrait({hair:'#111',hs:'cap',hat:'#2b2b2b',bg:'#2a3a2a',shirt:'#1a1a1a'},hash('bnjung')),pix:1}});CARDS.bign=SPECIAL.bign;CARDS.bnjung=SPECIAL.bnjung;
+{const m=STORY.find(x=>x.t==='Ein Name für Amca');if(m){
+ m.intro=`Problem, Bruder. Die Amcas wissen, dass im Hinterhof zwei Zivis verprügelt wurden. Die suchen einen. Wenn sie keinen finden, nehmen sie die ganze Hood auseinander. Amca wartet in deiner Hood. Gib ihm einen Namen. Oder nimm es auf dich. Deine Entscheidung. Ich sag nur: Big N dealt seit Wochen hinter dem Rewe, ohne irgendwem was abzugeben.`;
+ m.conv.n0.o[0]={t:'🐀 „Es war Big N. Der dealt hinter dem Rewe.“',go:'rami'};
+ m.conv.rami={s:`Big N? Der hinter dem Rewe? Den haben wir eh schon lange auf dem Schirm. Passt. Du kannst gehen.`,o:[{t:'Abgang',end:'win',flag:{verrat:'rami'}}]};
+ m.done=()=>({rami:'Big N? Kalt, Bruder. Aber der Platz hinter dem Rewe ist jetzt frei. Pass nur auf, wenn er rauskommt.',karim:'Abu Karim… Der arme Mann. Der redet jetzt gar nicht mehr. Nicht mal leise.',selbst:'Du hast es auf dich genommen. Respekt, Bruder. Die ganze Hood redet darüber.',keiner:'Du hast Amca angelogen und bist einfach rausgelaufen? Haha, du bist verrückt.'})[FL('verrat')]||'Erledigt ist erledigt.'}}
+{const m=STORY.find(x=>x.t==='Ramis Rache');if(m){m.t='Big Ns Rache';
+ m.intro=`Big N ist wieder draußen. Und er weiß, wer ihn verpfiffen hat. Er steht mit seinen Jungs hinter dem Rewe in Bochum City und wartet auf dich. Geh hin, bevor er zu dir kommt.`;
+ m.task='Besiege Big N und seine Jungs hinter dem Rewe in Bochum City.';m.npc='bign';m.foe='bnjung';m.eq=[{id:'bnjung'},{id:'bign',dl:2,boss:1}];m.hood='city';
+ m.say=`Du hast mich verpfiffen. Mich! Wegen dir war der Platz hinterm Rewe drei Monate leer!`;m.done=`Big N hat verstanden. Hinterm Rewe ist jetzt Ruhe. Hoffe ich.`}}
 
 /* ========== boot ========== */
 drawSkyline();titleMenu();cloudStart();
