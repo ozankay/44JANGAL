@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610212217"></script>
+<script src="fbshim.js?v=202610212353"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -1693,7 +1693,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=PMAX?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil in City oder Marienhospital in Gelsenkirchen) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="toggleMusic();openMenu()">${AU.musOff?'🎵 Musik ist aus':'🎵 Musik ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610212217 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610212353 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -4205,7 +4205,7 @@ async function clubDance_(){if(S.coins<20)return;S.coins-=20;closeModal();busy=t
  rhy.removeEventListener('pointerdown',pd);window.removeEventListener('keydown',kd);
  const sc=(per+good*.6)/tot;window.CLUB_LAST=sc;S.stats.club=(S.stats.club||0)+1;const pct=Math.round(sc*100);S.stats.clubBest=Math.max(S.stats.clubBest||0,pct);
  const nk=nightKey(),first=S.clubDrop!==nk;let drop=null;
- if(first&&sc>=.85&&R()<.10)drop='xCan';else if(first&&sc>=.7&&R()<.30)drop='xTechno';
+ if(first&&sc>=.85&&R()<.12)drop='xCan';else if(first&&sc>=.7&&R()<.35)drop='xTechno';
  const xp=Math.round(5+sc*25);addPXP(xp);const g=sc>=.7?ri(20,45):sc>=.45?ri(5,15):0;S.coins+=g;
  const txt=`<b style="color:${sc>=.7?'#9fe0ae':sc>=.45?'#ffe27a':'#ff8a8a'}">${pct} % · Max-Combo ${maxC}</b><br>${sc>=.85?'Die Tanzfläche gehört dir!':sc>=.7?'Die Leute machen Platz für dich.':sc>=.45?'Solide. Keiner lacht.':'Du tanzt wie ein Kühlschrank.'}<br>+${xp} XP${g?` · +${g} 💰 Trinkgeld`:''}`;
  if(drop){S.clubDrop=nk;await d2Res(txt+(drop==='xCan'?'<br><br>Jemand im Anzug drückt dir einen Schein in die Hand: „Du gefällst mir. Lass reden.“':'<br><br>Ein Riese mit Strobo-Brille legt dir den Arm um: „BRUDER! Noch eine Runde!“'));await d2CardDrop(ov,drop);return d2End()}
@@ -4879,13 +4879,13 @@ function chaseStep(t,sd){
 
 /* ========== FIX6: Revierkriege seltener, Live-Emotes ========== */
 // Revierkriege: höchstens einer gleichzeitig, danach 3-5 echte Stunden Ruhe, pro Spieltag nur 8 % (statt 25 % pro Revier)
-const TURF_CD_MIN=3*3600e3,TURF_CD_MAX=5*3600e3;
+const TURF_CD_MIN=2.5*3600e3,TURF_CD_MAX=4.5*3600e3;
 turfWar=function(n){S.turfAtk=S.turfAtk||{};
  for(const k of Object.keys(S.turfAtk)){if(dayNo()>S.turfAtk[k].until){if((S.turf||{})[k]>=100)S.turf[k]=60;const g=S.turfAtk[k].gang;delete S.turfAtk[k];setTimeout(()=>toast(`🏴 ${HOODS[k].n} ist weg! ${g} haben übernommen (60 %).`),2600)}}
  if(Object.keys(S.turfAtk).length)return;
  const now=Date.now();if(S.turfNextT==null){S.turfNextT=now+3600e3;return}if(now<S.turfNextT)return;
  const own=HOOD_KEYS.filter(k=>k!==S.hood&&(S.turf||{})[k]>=100);if(!own.length)return;
- if(R()>=.08*Math.min(n||1,3))return;
+ if(R()>=.10*Math.min(n||1,3))return;
  const k=pick(own);S.turfAtk[k]={until:dayNo()+1,gang:pick(GANGS)};S.turfNextT=now+TURF_CD_MIN+R()*(TURF_CD_MAX-TURF_CD_MIN);
  setTimeout(()=>toast(`⚔️ Revier-Krieg! ${S.turfAtk[k]?S.turfAtk[k].gang:'Eine Gang'} greifen ${HOODS[k].n} an. Fahr hin und verteidige es bis morgen!`),3400)};
 // alte Spielstände: zu viele gleichzeitige Angriffe auf einen zusammenstreichen
