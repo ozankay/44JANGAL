@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610212353"></script>
+<script src="fbshim.js?v=202610220008"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -1693,7 +1693,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=PMAX?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil in City oder Marienhospital in Gelsenkirchen) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="toggleMusic();openMenu()">${AU.musOff?'🎵 Musik ist aus':'🎵 Musik ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610212353 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610220008 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -1981,6 +1981,7 @@ async function turn(a){if(B.busy||B.over)return;if(MOVES[a]&&MOVES[a].ult&&act()
  if(a==='flee'){if(R()<fleeChance()){log('Du rennst weg. Weit weg.');await sleep(1000);return endBattle('flee')}log('Abhauen klappt nicht! Er hält dich fest.');await sleep(900)}
  else if(a.startsWith('item:')){await useBattleItem(a.slice(5),p,e)}
  else if(a.startsWith('sw:')){B.combo=0;B.ai=+a.slice(3);act().used=true;drawB();log(`${act().c.n} kommt rein!`);await sleep(900)}
+ else if(B.live&&p.flinch){p.flinch=false;popE('💫',rectOf('p'),{size:60});log(`${p.c.n} setzt aus.`);await sleep(1000)}
  else{if(MOVES[a]&&MOVES[a].ult)p.ultCd=4;const r=await attack(p,e,a);if(r==='end')return endBattle('police');if(await ko2())return}
  // enemy turn
  const p2=act();if(e.flinch){e.flinch=false;log(`${e.c.n} setzt aus.`);await sleep(800)}
@@ -4919,6 +4920,8 @@ function liveFair(){return LIVE_HPX&&LIVE.phase==='fight'&&LIVE.role==='A'}
 // XP danach wie bisher nach echtem Level, damit man über Live-Duelle nicht farmen kann
 {const _eb7=endBattle;endBattle=async function(res){try{if(B&&B.live)for(const f of [...(B.beaten||[]),B.e,...(B.team||[])])if(f&&f.rl!=null)f.lvl=f.rl}catch(e){}return _eb7.apply(this,arguments)}}
 
+// Live: Wer vom Gegner benommen wurde (Eier treten, Spucken, Kopfnuss…), setzt seinen nächsten Zug aus – jetzt auch beim Herausforderer
+{const _bc9=bCtl;bCtl=function(){_bc9.apply(this,arguments);try{if(B&&B.live&&!B.busy&&!B.over&&act().flinch&&$('#bctl')){const m=movesOf(act().c)[0];$('#bctl').innerHTML=`<div class="mtask" style="text-align:center;width:100%">💫 <b>${esc(act().c.n)}</b> ist benommen und muss diese Runde aussetzen.</div><button class="btn mv" style="grid-column:1/-1" onclick="turn('${m}')">😵 Aussetzen</button><div class="ex"><span class="ltm" id="ltm"></span><button class="btn" onclick="liveGiveUp()">🏳️ Aufgeben</button></div>`}}catch(e){}}}
 /* ========== boot ========== */
 drawSkyline();titleMenu();cloudStart();
 </script>
