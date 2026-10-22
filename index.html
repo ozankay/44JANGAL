@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610221255"></script>
+<script src="fbshim.js?v=202610221314"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -1698,7 +1698,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=PMAX?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil in City oder Marienhospital in Gelsenkirchen) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="toggleMusic();openMenu()">${AU.musOff?'🎵 Musik ist aus':'🎵 Musik ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610221255 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610221314 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -5104,7 +5104,7 @@ function uweS(){const d=dayNo();let u=S.uwe;if(u&&u.st==='active'&&d<=u.until)re
 let KID=null,FOL=null,NQ_NIGHT=null;
 function nqPlace(){if(!M||!S||M.h==='pw'||!M.st.B)return;const add=(id,c)=>{if(c&&!M.npcs.some(n=>n.x===c[0]&&n.y===c[1]))M.npcs.push({id,x:c[0],y:c[1]})};
  const m=momS();if(m.h===M.h&&['idle','active','found'].includes(m.st))add('mama',nqNear(M.st.B.x,M.st.B.y,4,9,'mama'+m.day));
- if(M.h==='sti'&&M.st.F){kalleS();add('kalle',nqNear(M.st.F.x,M.st.F.y,1,3,'kalle'))}
+ if(M.h==='sti'&&M.st.F){kalleS();const F=M.st.F;const side=[[F.x+2,F.y-1],[F.x+3,F.y-1],[F.x-4,F.y-1]].find(([x,y])=>nqFree(x,y));add('kalle',side||nqNear(F.x,F.y,2,4,'kalle'))}
  const c=coachS();if(c.h===M.h&&M.st.m&&c.st!=='claimed')add('coach',nqNear(M.st.m.x,M.st.m.y,1,2,'coach'+c.day));
  const mu=musS();if(mu&&mu.h===M.h&&!mu.done)add('musteri',nqNear(M.st.B.x,M.st.B.y,2,5,'mus'+mu.nk));
  const u=uweS();if(u.h===M.h)add('uwe',nqSpot('uwe'+u.day+u.salt));
