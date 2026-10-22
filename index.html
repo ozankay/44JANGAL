@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610221111"></script>
+<script src="fbshim.js?v=202610221133"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -941,7 +941,7 @@ const CARD_DEF=[
 ['Unsympathischer',2,'city','Bestechung',1],
 ['Kleiner Kacker',2,'wat','Gestank',1],
 ['Tom (mit Cap)',1,'wat','Bekifft',1],
-['Schmiergeta',4,'hus','Diebstahl',3],
+['Schmiergeta',4,'hus','Schmier',5],
 ['Was guckst du so Duo',3,'wat','Bestechung',2],
 ['Stinky Frankie',4,'wat','Max Bekifft',0],
 ['Psycho Kokser',2,'wat','Psycho',1],
@@ -1693,7 +1693,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=PMAX?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil in City oder Marienhospital in Gelsenkirchen) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="toggleMusic();openMenu()">${AU.musOff?'🎵 Musik ist aus':'🎵 Musik ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610221111 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610221133 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -4981,7 +4981,7 @@ function dzInZone(x,y){return M&&M.h==='city'&&(tile(x,y)==='z'||tile(x,y)==='C'
 {const _is=isSafe;isSafe=function(x,y){if(DZ.on&&dzInZone(x,y))return false;return _is(x,y)}}
 function dzGang(){return enemies.filter(e=>e.dz)}
 function dzStart(){const cells=dzCells().filter(([x,y])=>!(x===P.x&&y===P.y)&&!enemies.some(e=>e.x===x&&e.y===y));if(!cells.length)return;
- DZ.on=true;DZ.phase='danger';DZ.until=performance.now()+ri(40000,55000);DZ.car=null;S.dzNext=S.clock+TURF_DAY*2;
+ DZ.on=true;DZ.phase='danger';DZ.until=performance.now()+ri(40000,55000);DZ.car=null;S.dzNext=S.clock+TURF_DAY;
  const pool=dzPool();if(!pool.length)return;const n=Math.min(cells.length,ri(6,8)),ids=[...pool].sort(()=>R()-.5),lv=teamAvgLvl();
  for(let i=0;i<n;i++){const [x,y]=cells.splice(ri(0,cells.length-1),1)[0];enemies.push({x,y,rx:x,ry:y,id:ids[i%ids.length],lvl:lv+ri(2,4),grp:[],seed:R(),dz:1})}
  snd('alert');setTimeout(()=>snd('siren'),300);const mw=$('#mapwrap');if(mw){mw.classList.add('shake');setTimeout(()=>mw.classList.remove('shake'),700)}
@@ -5013,7 +5013,7 @@ function dzMove(){if(busy)return;for(const e of dzGang()){
 // Polizeiauto: kommt von links über die Straße, hält am Bermuda3eck, fährt rechts weiter
 function dzTick(t){if(!S||!M)return;if(M.h!=='city'){if(DZ.on||DZ.car||dzGang().length)dzReset();return}
  for(const e of dzGang()){e.rx+=(e.x-e.rx)*.3;e.ry+=(e.y-e.ry)*.3}
- if(!DZ.on&&!DZ.car){if(t-DZ.lastRoll>3500){DZ.lastRoll=t;if(S.plvl>=5&&S.clock>=(S.dzNext||0)&&R()<.012)dzStart()}return}
+ if(!DZ.on&&!DZ.car){if(t-DZ.lastRoll>3500){DZ.lastRoll=t;if(S.plvl>=5&&S.clock>=(S.dzNext||0)&&R()<.025)dzStart()}return}
  if(DZ.on&&t-(DZ.lastMove||0)>480){DZ.lastMove=t;dzMove()}
  if(DZ.on&&t-DZ.lastSay>2300){DZ.lastSay=t;dzSay(R()<.4?2:1)}
  if(DZ.on&&!DZ.car&&t>DZ.until){DZ.car={x:-1.5,y:3,stopX:10,state:'in',t0:t};snd('siren')}
