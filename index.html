@@ -11,7 +11,7 @@
 <script src="firebase/firebase-app-compat.js"></script>
 <script src="firebase/firebase-auth-compat.js"></script>
 <script src="firebase/firebase-firestore-compat.js"></script>
-<script src="fbshim.js?v=202610252119"></script>
+<script src="fbshim.js?v=202610252129"></script>
 <style>html,body{background:#08090b}.screen,#ov{top:var(--sat,env(safe-area-inset-top,0px)) !important;bottom:calc(env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}#modal{padding-top:calc(12px + var(--sat,env(safe-area-inset-top,0px))) !important;bottom:calc(0px - var(--sshift,0px)) !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important}#fblog{padding-top:calc(16px + var(--sat,0px)) !important}#toast{bottom:calc(82px + env(safe-area-inset-bottom,0px) - var(--sshift,0px)) !important}</style>
 </head><body>
 <title>44JANGAL</title>
@@ -859,6 +859,8 @@ img{-webkit-user-drag:none;user-drag:none}
 .so-msg img{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px}
 .so-diff{display:inline-block;font-family:'Press Start 2P',monospace;font-size:10px;border:2px solid;border-radius:8px;padding:6px 8px;margin-top:4px}
 .so-stats{display:grid;grid-template-columns:1fr auto;gap:4px 16px;font-size:14px;font-variant-numeric:tabular-nums}.so-stats span{color:var(--mut)}
+img,canvas{-webkit-user-drag:none;-webkit-touch-callout:none}
+button,.btn,.item,.pk,.card{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 </style>
 
 
@@ -1808,7 +1810,7 @@ function openMenu(){modal(`<h3 class="px">☰ MENÜ</h3><div class="sub">${esc(S
  <div class="lbl">Level ${S.plvl}/50 · ${titleOf(S.plvl)}</div><div class="xpbar" style="margin-bottom:8px"><i style="width:${S.plvl>=PMAX?100:S.pxp/pxpNeed(S.plvl)*100}%"></i></div><div class="mvlist" style="margin-bottom:14px">${TITLES.map(([l,n])=>`<span style="${S.plvl>=l?'border-color:var(--acc);color:var(--acc)':'opacity:.5'}">Lv ${l}: ${n}</span>`).join('')}</div>
  <div class="muted" style="margin-bottom:12px">Steuerung: Tippen/Klicken auf ein Feld zum Laufen, oder Pfeiltasten/WASD. Geh auf ein Gebäude mit Schild, um es zu betreten. Gegner kommen auf dich zu, vor allem nachts.<br>📜 Birra steht in deiner Hood beim Bahnhof und gibt dir Missionen.<br>🚓 Streifenwagen: Bleib aus dem gelben Lichtkegel, sonst holt dich Amca.<br>👤 Tipp auf deinen Charakter oben links fürs Profil und die Level-Geschenke.<br>🔒 Manche Läden schalten sich erst mit höherem Level frei.<br>⭐ Überfälle erhöhen die Fahndung. In der Crib kannst du untertauchen.<br>🚓 Die Streife verhaftet nur nachts.<br>💢 Manchmal streiten sich zwei auf der Straße. Geh hin und misch dich ein.<br>🎲 Leute mit Symbol über dem Kopf wollen was: Würfeln, Rap-Battle, Hehler, Chaya… Einfach hingehen.<br>💀 K.O. im Kampf = tot. Wiederbeleben im Krankenhaus (Bergmannsheil in City oder Marienhospital in Gelsenkirchen) mit den passenden Items.<br>🌿 Ab Level 15: Bunker. Pflanzen kaufen, gießen, düngen, ernten.<br>🏟️ Alle 3 Spieltage Heimspiel im Ruhrstadion: Box-Duell gegen einen Ultra.</div><div class="row" style="margin-bottom:10px"><button class="btn" onclick="toggleMute();openMenu()">${AU.muted?'🔇 Ton ist aus':'🔊 Ton ist an'}</button><button class="btn" onclick="toggleMusic();openMenu()">${AU.musOff?'🎵 Musik ist aus':'🎵 Musik ist an'}</button><button class="btn" onclick="closeModal();openProfile()">👤 Profil</button></div>
  <div class="muted" style="font-size:11px;margin-bottom:8px">Spielversion: ${window.APP_VER||'Claude-Version'}</div><div class="lbl">Speicherort</div><div class="muted" style="margin-bottom:8px">${cloudText()}</div><button class="btn" style="width:100%;margin-bottom:12px" onclick="cloudDiag()">🔧 Verbindung prüfen</button>${window.FB_APP?(window.FB&&FB.user?`<button class="btn" style="width:100%;margin:-4px 0 12px" onclick="fbLogout()">🚪 Abmelden (${esc(FB.user.email||'')})</button>`:`<button class="btn pri" style="width:100%;margin:-4px 0 12px" onclick="fbLogin()">🔑 Einloggen / Konto erstellen</button>`):''}
-  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610252119 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
+  <div class="muted" style="font-size:11px;margin:-6px 0 10px">${window.FB_APP?'App-Version 202610252129 · '+(window.VPINFO||''):''}</div><div class="lbl">Spielstand-Code</div><div class="muted" style="margin-bottom:8px">Damit nimmst du deinen Fortschritt auf ein anderes Handy, einen anderen Browser oder später in die Online-Version mit.</div>
  <div class="row" style="margin-bottom:10px"><button class="btn pri" onclick="codeExport()">💾 Spielstand sichern</button><button class="btn" onclick="codeImportUI()">📥 Code einfügen</button></div>
  <div class="row"><button class="btn" onclick="saveNow()">Speichern</button><button class="btn red" onclick="resetAsk(this)">Spielstand löschen</button></div>`)}
 /* ========== Spielstand-Code ========== */
@@ -5613,6 +5615,7 @@ const DIFF={
 const rnd=(a,b)=>a+Math.random()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1)),pick=a=>a[Math.floor(Math.random()*a.length)],lerp=(a,b,t)=>a+(b-a)*t;
 
 function css(){if(document.getElementById('dk-css'))return;const s=document.createElement('style');s.id='dk-css';s.textContent=`
+.dk-app,.dk-app *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .dk-app{height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px 0;box-sizing:border-box;container-type:size}
 .dk-frame{position:relative;width:min(100cqw,calc((100cqh - 96px)*0.5625),460px);aspect-ratio:9/16;flex:0 0 auto;border-radius:14px;overflow:hidden;box-shadow:0 0 0 2px #2a2f45,0 20px 60px #000c;background:#000;touch-action:none;user-select:none;-webkit-user-select:none}
 .dk-frame canvas{display:block;width:100%;height:100%;image-rendering:pixelated;cursor:crosshair}
@@ -5690,6 +5693,7 @@ function music(ac,out){if(!ac||!out)return {start(){},stop(){},speed(){}};
 // ---------- Ein Durchgang ----------
 function run(o){css();const D=DIFF[o.diff]||DIFF.mittel,DUR=D.dur,WV=[0,DUR/3,DUR*2/3],MAG=o.mag||6;
  const root=o.root;root.innerHTML=`<div class="dk-app"><div class="dk-frame"><canvas width="${W}" height="${H}"></canvas><div class="dk-hud"><span class="dk-hearts"></span><span class="dk-diff" style="color:${D.col}">${D.n}</span><span class="dk-score">0</span><span class="dk-timer"></span></div><div class="dk-combo"></div><div class="dk-ammo"></div><div class="dk-wave"></div></div><div class="dk-bar"><button class="dk-btn" data-k="rl">🔄 Nachladen</button><button class="dk-btn duck" data-k="dk">⬇ Ducken</button>${o.muteBtn?'<button class="dk-btn mute" data-k="mu">🔊</button>':''}</div></div>`;
+ const noSel=e=>{e.preventDefault()};root.addEventListener('contextmenu',noSel);root.addEventListener('selectstart',noSel);root.addEventListener('dragstart',noSel);
  const q=s=>root.querySelector(s),cv=q('canvas'),x=cv.getContext('2d');x.imageSmoothingEnabled=false;const bg=makeBg();
  const ac=o.ac||null,sOut=o.sfxOut||null;const muted=()=>!ac||!sOut||(o.muted&&o.muted());
  const mus=music(ac,o.musOut||null);
@@ -5849,11 +5853,17 @@ async function soGo(free){const o=soCall.cur;if(!o)return;soCall.cur=null;const 
  ov.innerHTML=`<div class="stage"><div class="px" style="font-size:11px;color:${D.col}">🔫 SCHIESSEREI · ${D.n}</div><div class="pres" style="position:relative">${res}</div><div class="so-stats"><span>Ausgeschaltet</span><b>${r.killed}</b><span>Treffsicherheit</span><b>${r.acc} %</b><span>Ausgewichen</span><b>${r.dodged}</b><span>Punkte</span><b>${r.score}</b></div><div class="hint">Tippen</div></div>`;
  await sleep(500);await tap(ov);ov.classList.remove('on');ov.innerHTML='';busy=false;try{setMusic(isNight()?'night':'day')}catch(x){}storyLvlCheck();hud();save()}
 
+/* ========== Kein Text-Markieren / Kopieren-Menü bei langem Drücken ========== */
+(function(){const ok=t=>t&&t.closest&&t.closest('input,textarea,[contenteditable="true"]');
+ for(const ev of ['contextmenu','selectstart','dragstart'])document.addEventListener(ev,e=>{if(!ok(e.target))e.preventDefault()},{capture:true});
+ // iOS: markierten Text sofort wieder aufheben, falls doch etwas markiert wird
+ document.addEventListener('selectionchange',()=>{try{const a=document.activeElement;if(ok(a))return;const s=window.getSelection();if(s&&s.rangeCount&&!s.isCollapsed)s.removeAllRanges()}catch(e){}})})();
+
 /* ========== boot ========== */
 drawSkyline();titleMenu();cloudStart();
 </script>
 
-<script>window.APP_VER='202610252119';
+<script>window.APP_VER='202610252129';
 (function(){if(!('serviceWorker' in navigator))return;let had=!!navigator.serviceWorker.controller,rl=false;
  addEventListener('load',()=>{navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{try{r.update()}catch(e){}}).catch(()=>{})});
  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl&&!jgBusy()){rl=true;jgReload()}had=true});})();
