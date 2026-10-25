@@ -1,5 +1,5 @@
 // 44JANGAL Service Worker: immer erst online die neueste Version holen (ohne Browser-Cache), offline aus dem Speicher
-const C='44j-202610251620';
+const C='44j-202610252119';
 const CORE=['./','index.html','fbshim.js','manifest.json','firebase/firebase-app-compat.js','firebase/firebase-auth-compat.js','firebase/firebase-firestore-compat.js','icons/icon-192.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>Promise.all(CORE.map(u=>fetch(new Request(u,{cache:'reload'})).then(res=>{if(res&&res.ok)return c.put(u,res)}).catch(()=>{})))).catch(()=>{}))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
